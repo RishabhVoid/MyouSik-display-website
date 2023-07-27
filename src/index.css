@@ -1,0 +1,27 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300&family=Tektur:wght@900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --font-family-pr: "Poppins", sans-serif;
+  --font-family-sec: "Tektur", cursive;
+  --colors-accent-pr: #f44336;
+  --colors-accent-sec: #fff428;
+  --colors-font-pr: #fff;
+  --colors-font-sec: #c2c2c2;
+  --colors-bg-pr: #181818;
+  --colors-bg-sec: #1d2671;
+}
+
+body {
+  font-family: var(--font-family-pr);
+  overflow: hidden;
+}
+
+h1 {
+  font-family: var(--font-family-sec);
+}
