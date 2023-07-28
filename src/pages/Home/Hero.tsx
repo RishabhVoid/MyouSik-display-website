@@ -1,50 +1,23 @@
 import { styled } from "styled-components";
 import CustomButton from "../../components/CustomButton";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense } from "react";
 import Spline from "@splinetool/react-spline";
-import {
-  LOADING_DURATION,
-  MOBILE_MODEL_LINK,
-  PC_MODEL_LINK,
-} from "../../data/config";
+import { LOADING_DURATION, MOBILE_MODEL_LINK } from "../../data/config";
 import { motion } from "framer-motion";
 import fadeInText from "../../motions/fadeInText";
 
-const Hero = () => {
-  const [isShortForModel, setIsShortForModel] = useState(false);
+type props = {
+  isLoading: boolean;
+};
 
-  const handleWindowResize = () => {
-    const windowWidth = window.innerWidth;
-    if (windowWidth >= 1200) {
-      setIsShortForModel(false);
-      return;
-    }
-    setIsShortForModel(true);
-  };
-
-  useEffect(() => {
-    const windowWidth = window.innerWidth;
-    if (windowWidth >= 1200) {
-      setIsShortForModel(false);
-    } else {
-      setIsShortForModel(true);
-    }
-
-    window.addEventListener("resize", handleWindowResize);
-
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
-  }, []);
-
+const Hero = ({ isLoading }: props) => {
   return (
     <Wrapper>
       <Header
         variants={fadeInText}
-        initial="initial"
-        animate="eventual"
+        animate={isLoading ? "initial" : "eventual"}
         transition={{
-          delay: LOADING_DURATION + 1.5,
+          delay: 0.5,
         }}
       >
         <h1>MYOUSIK</h1>
@@ -52,28 +25,25 @@ const Hero = () => {
       <CentreWrapper>
         <InfoWrapper
           variants={fadeInText}
-          initial="initial"
-          animate="eventual"
+          animate={isLoading ? "initial" : "eventual"}
           transition={{
-            delay: LOADING_DURATION + 1.6,
+            delay: 1,
           }}
         >
           <motion.h2
             variants={fadeInText}
-            initial="initial"
-            animate="eventual"
+            animate={isLoading ? "initial" : "eventual"}
             transition={{
-              delay: LOADING_DURATION + 1.8,
+              delay: 1.2,
             }}
           >
             Easy, but advanced audio manager
           </motion.h2>
           <motion.p
             variants={fadeInText}
-            initial="initial"
-            animate="eventual"
+            animate={isLoading ? "initial" : "eventual"}
             transition={{
-              delay: LOADING_DURATION + 1.9,
+              delay: 1.4,
             }}
           >
             Tired of complicated audio players that lack essential features or
@@ -85,16 +55,9 @@ const Hero = () => {
         </InfoWrapper>
       </CentreWrapper>
       <ModelWrapper>
-        {/* Uncomment all of this to let show the 3d models */}
-        {!isShortForModel ? (
-          <Suspense fallback={<h1>Hello</h1>}>
-            <Spline scene={PC_MODEL_LINK} />
-          </Suspense>
-        ) : (
-          <Suspense fallback={<h1>Hello</h1>}>
-            <Spline scene={MOBILE_MODEL_LINK} />
-          </Suspense>
-        )}
+        {/* <Suspense>
+          <Spline scene={MOBILE_MODEL_LINK} />
+        </Suspense> */}
       </ModelWrapper>
     </Wrapper>
   );
@@ -103,7 +66,6 @@ const Hero = () => {
 export default Hero;
 
 const Wrapper = styled.div`
-  background: var(--colors-bg-pr);
   position: relative;
   height: 100vh;
   padding: 1rem;

@@ -1,22 +1,26 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { css, styled } from "styled-components";
 import { LOADING_DURATION } from "../data/config";
 import { motion } from "framer-motion";
 
-const Loading = () => {
-  const [loadCount, setLoadCount] = useState(LOADING_DURATION);
-  const [isLoading, setIsLoading] = useState(true);
+type props = {
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-  const variant = {
-    move: {
-      x: [0, 0, -50, -50, 0],
-      y: [0, -50, -50, 0, 0],
-      transition: {
-        repeat: Infinity,
-        duration: 3,
-      },
-    },
-  };
+const Loading = ({ isLoading, setIsLoading }: props) => {
+  const [loadCount, setLoadCount] = useState(LOADING_DURATION);
+
+  // const variant = {
+  //   move: {
+  //     x: [0, 0, -50, -50, 0],
+  //     y: [0, -50, -50, 0, 0],
+  //     transition: {
+  //       repeat: Infinity,
+  //       duration: 3,
+  //     },
+  //   },
+  // };
 
   useEffect(() => {
     const loadingTimeInterval = setInterval(() => {
@@ -43,16 +47,17 @@ const Loading = () => {
           {"MYOUSIK".split("").map((value, index) => (
             <motion.h1
               key={index}
-              variants={variant}
-              animate={{
-                x: [0, 0, -50, -50, 0],
-                y: [0, -50, -50, 0, 0],
-                transition: {
-                  repeat: Infinity,
-                  duration: 3,
-                  delay: index,
-                },
-              }}
+              // Removed animations
+              // variants={variant}
+              // animate={{
+              //   x: [0, 0, -50, -50, 0],
+              //   y: [0, -50, -50, 0, 0],
+              //   transition: {
+              //     repeat: Infinity,
+              //     duration: 3,
+              //     delay: index,
+              //   },
+              // }}
             >
               {value}
             </motion.h1>
@@ -62,7 +67,7 @@ const Loading = () => {
           <span
             style={{
               width: `${
-                ((LOADING_DURATION - loadCount) / LOADING_DURATION) * 100
+                ((LOADING_DURATION - loadCount) / LOADING_DURATION) * 100 + 10
               }%`,
             }}
           />
@@ -113,6 +118,7 @@ const ProgressBarWrapper = styled.div`
   background: var(--colors-bg-sec);
   height: 20px;
   border-radius: 20px;
+  overflow: hidden;
 
   span {
     border-radius: 20px;
