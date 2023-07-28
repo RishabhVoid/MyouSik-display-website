@@ -2,7 +2,13 @@ import { styled } from "styled-components";
 import CustomButton from "../../components/CustomButton";
 import { Suspense, useEffect, useState } from "react";
 import Spline from "@splinetool/react-spline";
-import { MOBILE_MODEL_LINK, PC_MODEL_LINK } from "../../data/config";
+import {
+  LOADING_DURATION,
+  MOBILE_MODEL_LINK,
+  PC_MODEL_LINK,
+} from "../../data/config";
+import { motion } from "framer-motion";
+import fadeInText from "../../motions/fadeInText";
 
 const Hero = () => {
   const [isShortForModel, setIsShortForModel] = useState(false);
@@ -33,22 +39,53 @@ const Hero = () => {
 
   return (
     <Wrapper>
-      <Header>
+      <Header
+        variants={fadeInText}
+        initial="initial"
+        animate="eventual"
+        transition={{
+          delay: LOADING_DURATION + 1.5,
+        }}
+      >
         <h1>MYOUSIK</h1>
       </Header>
       <CentreWrapper>
-        <InfoWrapper>
-          <h2>Easy, but advanced audio manager</h2>
-          <p>
+        <InfoWrapper
+          variants={fadeInText}
+          initial="initial"
+          animate="eventual"
+          transition={{
+            delay: LOADING_DURATION + 1.6,
+          }}
+        >
+          <motion.h2
+            variants={fadeInText}
+            initial="initial"
+            animate="eventual"
+            transition={{
+              delay: LOADING_DURATION + 1.8,
+            }}
+          >
+            Easy, but advanced audio manager
+          </motion.h2>
+          <motion.p
+            variants={fadeInText}
+            initial="initial"
+            animate="eventual"
+            transition={{
+              delay: LOADING_DURATION + 1.9,
+            }}
+          >
             Tired of complicated audio players that lack essential features or
             are cumbersome to use? Look no further! MyouSik is the solution
             you've been waiting for - a sleek and user-friendly open-source
             audio player tailored specifically for Windows users.
-          </p>
+          </motion.p>
           <CustomButton title="Download" />
         </InfoWrapper>
       </CentreWrapper>
       <ModelWrapper>
+        {/* Uncomment all of this to let show the 3d models */}
         {!isShortForModel ? (
           <Suspense fallback={<h1>Hello</h1>}>
             <Spline scene={PC_MODEL_LINK} />
@@ -75,7 +112,8 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const Header = styled.div`
+const Header = styled(motion.div)`
+  position: relative;
   width: 90%;
   color: var(--colors-accent-sec);
   margin-top: 3rem;
@@ -96,7 +134,8 @@ const CentreWrapper = styled.div`
   align-items: center;
 `;
 
-const InfoWrapper = styled.div`
+const InfoWrapper = styled(motion.div)`
+  position: relative;
   max-width: 27rem;
   width: 100%;
   z-index: 20;
@@ -126,6 +165,20 @@ const InfoWrapper = styled.div`
       font-size: 0.9rem;
     }
 
+    max-width: 20rem;
+    align-self: flex-end;
+  }
+
+  @media (max-width: 1000px) {
+    h2 {
+      font-size: 1rem;
+      line-height: 1rem;
+    }
+
+    p {
+      font-size: 0.8rem;
+    }
+    margin-inline: auto;
     max-width: 20rem;
     align-self: flex-end;
   }
