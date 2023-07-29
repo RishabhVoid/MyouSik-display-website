@@ -18,6 +18,11 @@ const Hero = ({ isLoading, versionsRef, mainRef }: props) => {
     mainRef.current.scrollTop = versionsRef.current.offsetTop;
   };
 
+  const handleCodeBaseOpen = () => {
+    const linkUrl = "https://github.com/RishabhVoid/MyouSik";
+    window.open(linkUrl, "_blank");
+  };
+
   return (
     <Wrapper>
       <Header
@@ -60,7 +65,11 @@ const Hero = ({ isLoading, versionsRef, mainRef }: props) => {
           </motion.p>
           <div style={{ display: "flex" }}>
             <CustomButton title="Download" callback={handleDownloadCall} />
-            <CustomButton title="Codebase" ghost={true} />
+            <CustomButton
+              title="Codebase"
+              ghost={true}
+              callback={handleCodeBaseOpen}
+            />
           </div>
         </InfoWrapper>
       </CentreWrapper>
