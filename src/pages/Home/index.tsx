@@ -5,6 +5,8 @@ import useHorizontleMix from "../../hooks/useHorizontleScrollMix.ts";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import fadeInText from "../../motions/fadeInText.ts";
+import Versions from "./Versions.tsx";
+import Footer from "./Footer.tsx";
 
 type props = {
   isLoading: boolean;
@@ -13,11 +15,14 @@ type props = {
 const Home = ({ isLoading }: props) => {
   const quoteWrapperRef = useRef<HTMLDivElement | null>(null);
   const isQuoteInView = useInView(quoteWrapperRef);
+  const secondQuoteWrapperRef = useRef<HTMLDivElement | null>(null);
+  const isSecondQuoteInView = useInView(secondQuoteWrapperRef);
   const mainRef = useHorizontleMix();
+  const versionsRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <Wrapper ref={mainRef}>
-      <Hero isLoading={isLoading} />
+      <Hero isLoading={isLoading} versionsRef={versionsRef} mainRef={mainRef} />
       <QuoteWrapper
         ref={quoteWrapperRef}
         variants={fadeInText}
@@ -32,6 +37,17 @@ const Home = ({ isLoading }: props) => {
         <h2>peed</h2>
       </QuoteWrapper>
       <Features />
+      <QuoteWrapper
+        ref={secondQuoteWrapperRef}
+        variants={fadeInText}
+        animate={isSecondQuoteInView ? "eventual" : "initial"}
+      >
+        <span />
+        <h1>V</h1>
+        <h2>ersions</h2>
+      </QuoteWrapper>
+      <Versions versionsRef={versionsRef} />
+      <Footer />
     </Wrapper>
   );
 };

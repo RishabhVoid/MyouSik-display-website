@@ -2,15 +2,22 @@ import { styled } from "styled-components";
 import CustomButton from "../../components/CustomButton";
 import { Suspense } from "react";
 import Spline from "@splinetool/react-spline";
-import { LOADING_DURATION, MOBILE_MODEL_LINK } from "../../data/config";
+import { MOBILE_MODEL_LINK } from "../../data/config";
 import { motion } from "framer-motion";
 import fadeInText from "../../motions/fadeInText";
 
 type props = {
   isLoading: boolean;
+  versionsRef: React.MutableRefObject<HTMLDivElement | null>;
+  mainRef: React.MutableRefObject<HTMLDivElement | null>;
 };
 
-const Hero = ({ isLoading }: props) => {
+const Hero = ({ isLoading, versionsRef, mainRef }: props) => {
+  const handleDownloadCall = () => {
+    if (!versionsRef.current || !mainRef.current) return;
+    mainRef.current.scrollTop = versionsRef.current.offsetTop;
+  };
+
   return (
     <Wrapper>
       <Header
@@ -51,13 +58,16 @@ const Hero = ({ isLoading }: props) => {
             you've been waiting for - a sleek and user-friendly open-source
             audio player tailored specifically for Windows users.
           </motion.p>
-          <CustomButton title="Download" />
+          <div style={{ display: "flex" }}>
+            <CustomButton title="Download" callback={handleDownloadCall} />
+            <CustomButton title="Codebase" ghost={true} />
+          </div>
         </InfoWrapper>
       </CentreWrapper>
       <ModelWrapper>
-        {/* <Suspense>
+        <Suspense>
           <Spline scene={MOBILE_MODEL_LINK} />
-        </Suspense> */}
+        </Suspense>
       </ModelWrapper>
     </Wrapper>
   );
@@ -116,6 +126,7 @@ const InfoWrapper = styled(motion.div)`
 
   button {
     margin-top: 2rem;
+    margin-right: 2rem;
   }
 
   @media (max-width: 1200px) {

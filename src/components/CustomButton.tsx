@@ -1,16 +1,28 @@
 import { motion } from "framer-motion";
-import { styled } from "styled-components";
+import { css, styled } from "styled-components";
 import bopClickVariant from "../motions/bopClickVariant";
 
 type props = {
   title?: string;
   callback?: () => void;
+  ghost?: boolean;
+  disabled?: boolean;
 };
 
-const CustomButton = ({ title = "Default", callback = () => {} }: props) => {
+const CustomButton = ({
+  title = "Default",
+  callback = () => {},
+  ghost = false,
+  disabled = false,
+}: props) => {
   return (
     <Wrapper
-      onClick={callback}
+      $ghost={ghost}
+      $disabled={disabled}
+      onClick={() => {
+        if (disabled) return;
+        callback();
+      }}
       variants={bopClickVariant}
       whileHover={"hover"}
       whileTap={"click"}
@@ -22,7 +34,7 @@ const CustomButton = ({ title = "Default", callback = () => {} }: props) => {
 
 export default CustomButton;
 
-const Wrapper = styled(motion.button)`
+const Wrapper = styled(motion.button)<{ $ghost: boolean; $disabled: boolean }>`
   position: relative;
   padding: 10px 20px;
   border-radius: 5px;
@@ -32,4 +44,21 @@ const Wrapper = styled(motion.button)`
   color: var(--colors-font-pr);
   cursor: pointer;
   z-index: 60;
+
+  ${(props) =>
+    props.$ghost &&
+    css`
+      background-color: transparent;
+      border: 1px solid var(--colors-accent-pr);
+      color: var(--colors-accent-pr);
+    `}
+
+  ${(props) =>
+    props.$disabled &&
+    css`
+      background-color: transparent;
+      border: 1px solid var(--colors-font-sec);
+      color: var(--colors-font-sec);
+      pointer-events: none;
+    `}
 `;
