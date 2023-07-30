@@ -75,7 +75,7 @@ const Contact = ({ contactRef, mainRef }: props) => {
 
     if (!contactRef.current) return;
 
-    console.log(process.env.VITE_USER_ID);
+    console.log(window.process.env.VITE_USER_ID);
 
     // emailjs
     //   .sendForm(
