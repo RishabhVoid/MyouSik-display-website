@@ -7,6 +7,7 @@ type props = {
   callback?: () => void;
   ghost?: boolean;
   disabled?: boolean;
+  type?: "button" | "submit";
 };
 
 const CustomButton = ({
@@ -14,6 +15,7 @@ const CustomButton = ({
   callback = () => {},
   ghost = false,
   disabled = false,
+  type = "button",
 }: props) => {
   return (
     <Wrapper
@@ -26,6 +28,7 @@ const CustomButton = ({
       variants={bopClickVariant}
       whileHover={"hover"}
       whileTap={"click"}
+      type={type}
     >
       {title}
     </Wrapper>

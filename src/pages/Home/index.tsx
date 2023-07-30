@@ -7,6 +7,7 @@ import { motion, useInView } from "framer-motion";
 import fadeInText from "../../motions/fadeInText.ts";
 import Versions from "./Versions.tsx";
 import Footer from "./Footer.tsx";
+import Contact from "./Contact.tsx";
 
 type props = {
   isLoading: boolean;
@@ -15,14 +16,25 @@ type props = {
 const Home = ({ isLoading }: props) => {
   const quoteWrapperRef = useRef<HTMLDivElement | null>(null);
   const isQuoteInView = useInView(quoteWrapperRef);
+
   const secondQuoteWrapperRef = useRef<HTMLDivElement | null>(null);
   const isSecondQuoteInView = useInView(secondQuoteWrapperRef);
+
+  const thirdQuoteWrapperRef = useRef<HTMLDivElement | null>(null);
+  const isThirdQuoteInView = useInView(thirdQuoteWrapperRef);
+
   const mainRef = useHorizontleMix();
   const versionsRef = useRef<HTMLDivElement | null>(null);
+  const contactRef = useRef<HTMLFormElement | null>(null);
 
   return (
     <Wrapper ref={mainRef}>
-      <Hero isLoading={isLoading} versionsRef={versionsRef} mainRef={mainRef} />
+      <Hero
+        isLoading={isLoading}
+        versionsRef={versionsRef}
+        contactRef={contactRef}
+        mainRef={mainRef}
+      />
       <QuoteWrapper
         ref={quoteWrapperRef}
         variants={fadeInText}
@@ -47,6 +59,16 @@ const Home = ({ isLoading }: props) => {
         <h2>ersions</h2>
       </QuoteWrapper>
       <Versions versionsRef={versionsRef} />
+      <QuoteWrapper
+        ref={thirdQuoteWrapperRef}
+        variants={fadeInText}
+        animate={isThirdQuoteInView ? "eventual" : "initial"}
+      >
+        <span />
+        <h1>C</h1>
+        <h2>ontact</h2>
+      </QuoteWrapper>
+      <Contact contactRef={contactRef} mainRef={mainRef} />
       <Footer />
     </Wrapper>
   );

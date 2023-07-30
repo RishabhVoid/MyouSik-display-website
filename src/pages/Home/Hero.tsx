@@ -9,18 +9,19 @@ import fadeInText from "../../motions/fadeInText";
 type props = {
   isLoading: boolean;
   versionsRef: React.MutableRefObject<HTMLDivElement | null>;
+  contactRef: React.MutableRefObject<HTMLFormElement | null>;
   mainRef: React.MutableRefObject<HTMLDivElement | null>;
 };
 
-const Hero = ({ isLoading, versionsRef, mainRef }: props) => {
+const Hero = ({ isLoading, versionsRef, contactRef, mainRef }: props) => {
   const handleDownloadCall = () => {
     if (!versionsRef.current || !mainRef.current) return;
     mainRef.current.scrollTop = versionsRef.current.offsetTop;
   };
 
-  const handleCodeBaseOpen = () => {
-    const linkUrl = "https://github.com/RishabhVoid/MyouSik";
-    window.open(linkUrl, "_blank");
+  const handleContactCall = () => {
+    if (!contactRef.current || !mainRef.current) return;
+    mainRef.current.scrollTop = contactRef.current.offsetTop;
   };
 
   return (
@@ -66,17 +67,17 @@ const Hero = ({ isLoading, versionsRef, mainRef }: props) => {
           <div style={{ display: "flex" }}>
             <CustomButton title="Download" callback={handleDownloadCall} />
             <CustomButton
-              title="Codebase"
+              title="Contact"
               ghost={true}
-              callback={handleCodeBaseOpen}
+              callback={handleContactCall}
             />
           </div>
         </InfoWrapper>
       </CentreWrapper>
       <ModelWrapper>
-        <Suspense>
+        {/* <Suspense>
           <Spline scene={MOBILE_MODEL_LINK} />
-        </Suspense>
+        </Suspense> */}
       </ModelWrapper>
     </Wrapper>
   );
