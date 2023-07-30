@@ -75,9 +75,9 @@ const Hero = ({ isLoading, versionsRef, contactRef, mainRef }: props) => {
         </InfoWrapper>
       </CentreWrapper>
       <ModelWrapper>
-        {/* <Suspense>
+        <Suspense>
           <Spline scene={MOBILE_MODEL_LINK} />
-        </Suspense> */}
+        </Suspense>
       </ModelWrapper>
     </Wrapper>
   );
