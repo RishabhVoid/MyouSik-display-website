@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
 import CustomButton from "../../components/CustomButton";
 import React, { useRef, useState } from "react";
-// import emailjs from "@emailjs/browser";
+import emailjs from "@emailjs/browser";
 
 type props = {
   contactRef: React.MutableRefObject<null | HTMLFormElement>;
@@ -75,37 +75,34 @@ const Contact = ({ contactRef, mainRef }: props) => {
 
     if (!contactRef.current) return;
 
-    console.log(process.env.VITE_USER_ID);
-    console.log(import.meta.env.VITE_USER_ID);
-
-    // emailjs
-    //   .sendForm(
-    //     "gmail",
-    //     "template_5tzjrzm",
-    //     contactRef.current,
-    //     import.meta.env.VITE_USER_ID
-    //   )
-    //   .then(
-    //     () => {
-    //       showAlert(
-    //         [
-    //           "Your message was sent successfully!",
-    //           "Expect an answer within 1-3 days.",
-    //         ],
-    //         "msg"
-    //       );
-    //     },
-    //     () => {
-    //       showAlert(
-    //         [
-    //           "Due to some problem your message wasn't sent!",
-    //           "Please try later.",
-    //         ],
-    //         "msg"
-    //       );
-    //     }
-    //   );
-    // clearForm();
+    emailjs
+      .sendForm(
+        "gmail",
+        "template_5tzjrzm",
+        contactRef.current,
+        import.meta.env.VITE_USER_ID
+      )
+      .then(
+        () => {
+          showAlert(
+            [
+              "Your message was sent successfully!",
+              "Expect an answer within 1-3 days.",
+            ],
+            "msg"
+          );
+        },
+        () => {
+          showAlert(
+            [
+              "Due to some problem your message wasn't sent!",
+              "Please try later.",
+            ],
+            "msg"
+          );
+        }
+      );
+    clearForm();
   };
 
   return (
