@@ -8,6 +8,7 @@ import fadeInText from "../../motions/fadeInText.ts";
 import Versions from "./Versions.tsx";
 import Footer from "./Footer.tsx";
 import Contact from "./Contact.tsx";
+import VideoPlayer from "./VideoPlayer.tsx";
 
 type props = {
   isLoading: boolean;
@@ -22,6 +23,9 @@ const Home = ({ isLoading }: props) => {
 
   const thirdQuoteWrapperRef = useRef<HTMLDivElement | null>(null);
   const isThirdQuoteInView = useInView(thirdQuoteWrapperRef);
+
+  const fourthQuoteWrapperRef = useRef<HTMLDivElement | null>(null);
+  const isFourthQuoteInView = useInView(fourthQuoteWrapperRef);
 
   const mainRef = useHorizontleMix();
   const versionsRef = useRef<HTMLDivElement | null>(null);
@@ -63,6 +67,18 @@ const Home = ({ isLoading }: props) => {
         ref={thirdQuoteWrapperRef}
         variants={fadeInText}
         animate={isThirdQuoteInView ? "eventual" : "initial"}
+      >
+        <span />
+        <h1>D</h1>
+        <h2>emo</h2>&nbsp;
+        <h1>V</h1>
+        <h2>ideo</h2>
+      </QuoteWrapper>
+      <VideoPlayer />
+      <QuoteWrapper
+        ref={fourthQuoteWrapperRef}
+        variants={fadeInText}
+        animate={isFourthQuoteInView ? "eventual" : "initial"}
       >
         <span />
         <h1>C</h1>
