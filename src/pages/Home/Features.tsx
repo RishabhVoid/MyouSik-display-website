@@ -1,124 +1,198 @@
 import { css, styled } from "styled-components";
-import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import FeaturesData, { FeatureTypeDef } from "../../data/features";
+import { RefObject, useEffect, useRef } from "react";
+import { useInView, motion } from "framer-motion";
 import fadeInText from "../../motions/fadeInText";
-import FeaturesData from "../../data/features";
+import useScrollProgress from "../../hooks/useScrollProgress";
+import useGetDimensions from "../../hooks/useGetDimensions";
 
-const Features = () => {
+type props = {
+  mainRef: RefObject<HTMLDivElement | null>;
+};
+
+const Features = ({ mainRef }: props) => {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const prog = useScrollProgress(wrapperRef, mainRef);
+
   return (
-    <Wrapper>
-      <StickyWrapper className="sticky_box">
-        {FeaturesData.map((feature, index) => (
-          <FeatureCard
-            title={feature.title}
-            specialTitle={feature.specialTitle}
-            points={feature.points}
-            svg={feature.svg}
-            svgAlt={feature.svgAlt}
-            reversed={feature.reversed}
-            key={index}
-          />
-        ))}
-      </StickyWrapper>
+    <Wrapper ref={wrapperRef}>
+      <BackgroundWrapper>
+        <div className="background">
+          <span
+            className="blob"
+            style={{
+              top: `${(prog / 100) * 10}rem`,
+            }}
+          >
+            WHAT WE OFFER
+          </span>
+        </div>
+      </BackgroundWrapper>
+      {FeaturesData.map((feature: FeatureTypeDef, index) => (
+        <FeatureSection feature={feature} index={index} key={feature.title} />
+      ))}
     </Wrapper>
   );
 };
 
 export default Features;
 
-type FeatureCardProps = {
-  title: string;
-  specialTitle: string;
-  points: Array<string>;
-  reversed?: boolean;
-  svg: string;
-  svgAlt: string;
-};
-
-const FeatureCard = ({
-  title,
-  specialTitle,
-  points,
-  reversed = false,
-  svg,
-  svgAlt,
-}: FeatureCardProps) => {
-  const featureRef = useRef<HTMLDivElement | null>(null);
-  const isVisible = useInView(featureRef);
-
-  const [animation, setAnimation] = useState("initial");
-
-  useEffect(() => {
-    if (isVisible) {
-      setAnimation("eventual");
-    }
-  }, [isVisible]);
-
-  return (
-    <FeatureWrapper $reverse={reversed}>
-      <InfoWrapper
-        ref={featureRef}
-        variants={fadeInText}
-        animate={animation}
-        transition={{ delay: 0.5 }}
-      >
-        <motion.h2
-          variants={fadeInText}
-          animate={animation}
-          transition={{ delay: 1 }}
-        >
-          {title}
-          <span>{specialTitle}</span>
-        </motion.h2>
-        <ul>
-          {points.map((point, index) => (
-            <motion.li
-              key={index}
-              animate={animation}
-              transition={{ delay: 1.5 + 0.1 * index }}
-            >
-              {point}
-            </motion.li>
-          ))}
-        </ul>
-      </InfoWrapper>
-      <ImageWrapper
-        $reverse={reversed}
-        animate={animation}
-        transition={{ delay: 1.2 }}
-      >
-        <img src={svg} alt={svgAlt} />
-      </ImageWrapper>
-    </FeatureWrapper>
-  );
-};
-
 const Wrapper = styled.div`
-  height: 300vh;
   position: relative;
-`;
+  height: 100%;
+  z-index: 50;
+  background-color: var(--colors-accent-sec);
+  border-radius: 50px 0px 0px 50px;
 
-const StickyWrapper = styled.div`
-  height: 100vh;
-  position: sticky;
-  top: 0;
-  display: flex;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding-right: 5rem;
-
-  &::-webkit-scrollbar {
-    width: 0px;
+  @media (max-width: 1020px) {
+    height: fit-content;
   }
 `;
 
-const FeatureWrapper = styled(motion.div)<{ $reverse: boolean }>`
-  height: 100vh;
-  min-width: 100vw;
-  max-width: 100vw;
-  width: 100vw;
+const BackgroundWrapper = styled.div`
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 55;
+
+  .background {
+    width: 100%;
+    height: 100dvh;
+    position: sticky;
+    top: 0;
+    border-radius: 50px 0px 0px 50px;
+    display: flex;
+    overflow: hidden;
+
+    .blob {
+      position: absolute;
+      top: 10%;
+      right: -10%;
+      z-index: 56;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 5rem;
+      background: var(--colors-accent-sec);
+      filter: brightness(0.7);
+      transition: 0.3s all linear;
+      transform: rotateZ(20deg);
+
+      font-family: var(--font-family-sec);
+      font-size: 3.5rem;
+      color: rgba(0, 0, 0, 0.1);
+    }
+  }
+`;
+
+type FeatureSectionProps = {
+  feature: FeatureTypeDef;
+  index: number;
+};
+
+const showDelay = 0.1;
+
+const FeatureSection = ({ feature, index }: FeatureSectionProps) => {
+  const { width } = useGetDimensions();
+
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const isHeadingInView = useInView(headingRef);
+
+  const specialHeadingRef = useRef<HTMLHeadingElement>(null);
+  const isSpecialHeadingInView = useInView(specialHeadingRef);
+
+  return (
+    <Section $index={index} $reverse={feature.reversed}>
+      <div className="picture">
+        <img
+          src={feature.svg}
+          className="pc_view_preview"
+          alt={feature.svgAlt}
+        />
+        <div className="tag">
+          <h1>{feature.tag}</h1>
+          <hr />
+        </div>
+      </div>
+      <SectionInfo>
+        <div className="info_box_wrapper">
+          <div className="info_box">
+            <motion.h1
+              className="info_heading"
+              ref={headingRef}
+              variants={width > 1020 ? fadeInText : {}}
+              animate={!isHeadingInView ? "initial" : "eventual"}
+              transition={{
+                delay: showDelay,
+              }}
+            >
+              {feature.title}
+              <span> {feature.specialTitle}</span>
+            </motion.h1>
+            {feature.points.map((point, pointsIndex) => (
+              <motion.li
+                key={point.length}
+                variants={width > 1020 ? fadeInText : {}}
+                animate={!isHeadingInView ? "initial" : "eventual"}
+                transition={{
+                  delay: showDelay * (pointsIndex + 2),
+                }}
+              >
+                {point}
+              </motion.li>
+            ))}
+          </div>
+          <img
+            src={feature.svg}
+            className="mobile_view_preview"
+            alt={feature.svgAlt}
+          />
+        </div>
+        <div className="info_box_wrapper">
+          <div className="info_box">
+            <motion.h1
+              className="info_heading"
+              ref={specialHeadingRef}
+              variants={width > 1020 ? fadeInText : {}}
+              animate={!isSpecialHeadingInView ? "initial" : "eventual"}
+              transition={{
+                delay: showDelay,
+              }}
+            >
+              {feature.secondTitle}
+            </motion.h1>
+            {feature.secondaryPoints.map((point, secondaryPointIndex) => (
+              <motion.li
+                key={point.length}
+                variants={width > 1020 ? fadeInText : {}}
+                animate={!isSpecialHeadingInView ? "initial" : "eventual"}
+                transition={{
+                  delay: showDelay * (secondaryPointIndex + 2),
+                }}
+              >
+                {point}
+              </motion.li>
+            ))}
+          </div>
+        </div>
+      </SectionInfo>
+    </Section>
+  );
+};
+
+const Section = styled.div<{ $index: Number; $reverse: Boolean }>`
+  position: relative;
+  height: 200dvh;
+  color: white;
   display: flex;
-  padding: 1rem;
+  z-index: 60;
+
+  @media (max-width: 1020px) {
+    padding-top: 5rem;
+    height: fit-content;
+  }
 
   ${(props) =>
     props.$reverse &&
@@ -126,102 +200,134 @@ const FeatureWrapper = styled(motion.div)<{ $reverse: boolean }>`
       flex-direction: row-reverse;
     `}
 
-  @media (max-width: 550px) {
-    flex-direction: column-reverse;
-  }
-`;
+  .picture {
+    position: sticky;
+    top: 0;
+    width: 50%;
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding-left: 2rem;
 
-const InfoWrapper = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  width: 50%;
-  align-items: center;
-  justify-content: center;
-
-  @media (max-width: 800px) {
-    width: 60%;
-  }
-
-  @media (max-width: 550px) {
-    width: 100%;
-    height: 50%;
-  }
-
-  h2 {
-    width: 60%;
-    @media (max-width: 550px) {
-      width: 95%;
-    }
-    font-weight: 300;
-    color: var(--colors-font-pr);
-
-    span {
-      color: var(--colors-accent-pr);
-    }
-  }
-
-  ul {
-    width: 60%;
-    padding-left: 5px;
-    margin-top: 20px;
-    @media (max-width: 550px) {
-      width: 95%;
+    @media (max-width: 1020px) {
+      display: none;
     }
 
-    li {
-      list-style: none;
-      color: var(--colors-font-sec);
-      font-size: 0.9rem;
-      margin-bottom: 10px;
-    }
-  }
-
-  @media (max-width: 800px) {
-    h2 {
-      font-size: 1rem;
-    }
-
-    ul > li {
-      font-size: 0.8rem;
-    }
-  }
-`;
-
-const ImageWrapper = styled(motion.div)<{ $reverse: boolean }>`
-  width: 50%;
-  display: flex;
-
-  @media (max-width: 800px) {
-    width: 40%;
-  }
-
-  @media (max-width: 550px) {
-    height: 50%;
-    width: 100%;
-  }
-
-  img {
-    height: 100%;
-    margin: auto 0;
-    margin-left: auto;
-
-    @media (max-width: 800px) {
-      height: 50%;
-    }
-
-    @media (max-width: 550px) {
+    .tag {
+      margin-left: auto;
+      display: flex;
+      flex-direction: column;
       height: 100%;
-      width: 100%;
-      object-fit: contain;
-      object-position: center;
-      margin-inline: auto;
+      justify-content: center;
+      position: relative;
+
+      @media (max-width: 1020px) {
+        display: none;
+      }
+
+      h1 {
+        color: var(--colors-bg-sec);
+        transform: rotateZ(90deg);
+      }
+
+      hr {
+        position: absolute;
+        background: var(--colors-bg-sec);
+        border: 0px;
+        margin-inline: auto;
+        height: 20%;
+        bottom: 0;
+        width: 5px;
+        margin-inline: 2rem;
+      }
     }
 
     ${(props) =>
       props.$reverse &&
       css`
-        margin-left: initial;
-        margin-right: auto;
+        justify-content: end;
+        padding-left: 0rem;
+        padding-right: 2rem;
       `}
+
+    .pc_view_preview {
+      object-position: center;
+      object-fit: contain;
+      width: 60%;
+
+      ${(props) =>
+        props.$index === 2 &&
+        css`
+          width: 50%;
+        `}
+
+      ${(props) =>
+        props.$index === 1 &&
+        css`
+          width: 50%;
+        `}
+    }
+  }
+`;
+
+const SectionInfo = styled.div`
+  height: 100%;
+  flex: 1;
+  position: relative;
+
+  .mobile_view_preview {
+    width: 100%;
+    position: absolute;
+    margin-block: 2rem;
+  }
+
+  .info_box_wrapper {
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+
+    @media (max-width: 1020px) {
+      flex-direction: column;
+      height: fit-content;
+    }
+
+    .mobile_view_preview {
+      width: 100%;
+      position: relative;
+      max-width: 30rem;
+      @media (min-width: 1020px) {
+        display: none;
+      }
+    }
+
+    .info_box {
+      max-width: 30rem;
+
+      .info_heading {
+        margin-bottom: 1rem;
+        position: relative;
+        color: var(--colors-bg-pr);
+        @media (max-width: 1020px) {
+          font-size: 1.5rem;
+        }
+        span {
+          color: var(--colors-accent-pr);
+        }
+      }
+
+      li {
+        list-style: none;
+        margin-bottom: 10px;
+        position: relative;
+        font-size: 1.2rem;
+        color: var(--colors-bg-sec);
+        @media (max-width: 1020px) {
+          font-size: 0.9rem;
+        }
+      }
+    }
   }
 `;

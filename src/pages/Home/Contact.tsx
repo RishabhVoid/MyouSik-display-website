@@ -4,7 +4,7 @@ import React, { useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
 
 type props = {
-  contactRef: React.MutableRefObject<null | HTMLFormElement>;
+  contactRef: React.MutableRefObject<null | HTMLDivElement>;
   mainRef: React.MutableRefObject<null | HTMLDivElement>;
 };
 
@@ -12,6 +12,7 @@ const Contact = ({ contactRef, mainRef }: props) => {
   const nameInputRef = useRef<null | HTMLInputElement>(null);
   const emailInputRef = useRef<null | HTMLInputElement>(null);
   const messageInputRef = useRef<null | HTMLTextAreaElement>(null);
+  const formRef = useRef<null | HTMLFormElement>(null);
 
   const [alertMessages, setAlertMessages] = useState<Array<string>>([]);
   const [isAlertError, setIsAlertError] = useState(true);
@@ -73,13 +74,13 @@ const Contact = ({ contactRef, mainRef }: props) => {
       return;
     }
 
-    if (!contactRef.current) return;
+    if (!formRef.current) return;
 
     emailjs
       .sendForm(
         "gmail",
         "template_5tzjrzm",
-        contactRef.current,
+        formRef.current,
         import.meta.env.VITE_USER_ID
       )
       .then(
@@ -106,57 +107,134 @@ const Contact = ({ contactRef, mainRef }: props) => {
   };
 
   return (
-    <Wrapper ref={contactRef} onSubmit={handleFormSubmit}>
-      {alertMessages.length !== 0 && (
-        <AlertWrapper
-          style={{
-            backgroundColor: isAlertError ? "#f44336" : "#0663e5",
-          }}
-        >
-          {alertMessages.map((msg, index) => (
-            <li key={index}>{msg}</li>
-          ))}
-        </AlertWrapper>
-      )}
-      <PrimaryInputWrapper>
-        <input
-          type="text"
-          placeholder="Your name here..."
-          ref={nameInputRef}
-          name="name"
-        />
-        <input
-          type="email"
-          placeholder="Your email here..."
-          ref={emailInputRef}
-          name="email"
-        />
-      </PrimaryInputWrapper>
-      <SecondaryInputWrapper>
-        <textarea
-          placeholder="Type the message here..."
-          ref={messageInputRef}
-          name="msg"
-        />
-      </SecondaryInputWrapper>
-      <ButtonWrapper>
-        <CustomButton type="submit" title="Send" />
-      </ButtonWrapper>
+    <Wrapper ref={contactRef}>
+      <h1>Contact us</h1>
+      <Layout>
+        <Form onSubmit={handleFormSubmit} ref={formRef}>
+          {alertMessages.length !== 0 && (
+            <AlertWrapper
+              style={{
+                backgroundColor: isAlertError ? "#f44336" : "#0663e5",
+              }}
+            >
+              {alertMessages.map((msg, index) => (
+                <li key={index}>{msg}</li>
+              ))}
+            </AlertWrapper>
+          )}
+          <PrimaryInputWrapper>
+            <input
+              type="text"
+              placeholder="Your name here..."
+              ref={nameInputRef}
+              name="name"
+            />
+            <input
+              type="email"
+              placeholder="Your email here..."
+              ref={emailInputRef}
+              name="email"
+            />
+          </PrimaryInputWrapper>
+          <SecondaryInputWrapper>
+            <textarea
+              placeholder="Type the message here..."
+              ref={messageInputRef}
+              name="msg"
+            />
+          </SecondaryInputWrapper>
+          <ButtonWrapper>
+            <CustomButton type="submit" title="Send" />
+          </ButtonWrapper>
+        </Form>
+        <Illustration>
+          <img src="/images/contact_bg.png" alt="contact_bg.png" />
+          <h1>We'd be happy to hear your thoughts, send em over 'ere!</h1>
+          <hr />
+        </Illustration>
+      </Layout>
     </Wrapper>
   );
 };
 
 export default Contact;
 
-const Wrapper = styled.form`
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  z-index: 50;
+  background-color: var(--colors-bg-pr);
+
+  h1 {
+    font-size: 2rem;
+    color: white;
+    padding: 1rem;
+  }
+`;
+
+const Layout = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+`;
+
+const Form = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem 0;
+  justify-content: center;
+  flex: 1;
+`;
+
+const Illustration = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex: 1;
+
+  @media (max-width: 1020px) {
+    display: none;
+  }
+
+  h1 {
+    position: relative;
+    z-index: 57;
+    text-align: center;
+    color: black;
+    max-width: 40rem;
+    font-size: 2.5rem;
+    padding: 1rem;
+  }
+
+  hr {
+    position: relative;
+    z-index: 57;
+    left: -20%;
+    height: 5px;
+    width: 200px;
+    border: 0px;
+    background: var(--colors-accent-pr);
+  }
+
+  img {
+    position: absolute;
+    border-radius: 100px 0px 0px 0px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
 `;
 
 const AlertWrapper = styled.div`
-  width: calc(1rem + 600px);
+  width: 90%;
   margin-bottom: 1.5rem;
   padding: 0.5rem;
   border-radius: 5px;
@@ -167,7 +245,11 @@ const AlertWrapper = styled.div`
   justify-content: center;
 
   li {
-    list-style: decimal;
+    list-style: none;
+  }
+
+  @media (max-width: 1020px) {
+    padding-inline: 10px;
   }
 `;
 

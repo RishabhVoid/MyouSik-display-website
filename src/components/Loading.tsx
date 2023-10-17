@@ -10,18 +10,7 @@ type props = {
 
 const Loading = ({ isLoading, setIsLoading }: props) => {
   const [loadCount, setLoadCount] = useState(LOADING_DURATION);
-
-  // const variant = {
-  //   move: {
-  //     x: [0, 0, -50, -50, 0],
-  //     y: [0, -50, -50, 0, 0],
-  //     transition: {
-  //       repeat: Infinity,
-  //       duration: 3,
-  //     },
-  //   },
-  // };
-
+  
   useEffect(() => {
     const loadingTimeInterval = setInterval(() => {
       setLoadCount((loadCount) => {

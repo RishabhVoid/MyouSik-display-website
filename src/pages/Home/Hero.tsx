@@ -1,36 +1,49 @@
 import { styled } from "styled-components";
-import CustomButton from "../../components/CustomButton";
-import { Suspense } from "react";
-import Spline from "@splinetool/react-spline";
-import { MOBILE_MODEL_LINK } from "../../data/config";
 import { motion } from "framer-motion";
+import { useRef, RefObject } from "react";
+import CustomButton from "../../components/CustomButton";
 import fadeInText from "../../motions/fadeInText";
+import useScrollProgress from "../../hooks/useScrollProgress";
 
 type props = {
   isLoading: boolean;
-  versionsRef: React.MutableRefObject<HTMLDivElement | null>;
-  contactRef: React.MutableRefObject<HTMLFormElement | null>;
-  mainRef: React.MutableRefObject<HTMLDivElement | null>;
+  mainRef: RefObject<HTMLDivElement | null>;
+  versionsRef: RefObject<HTMLDivElement | null>;
+  contactRef: RefObject<HTMLDivElement | null>;
 };
 
-const Hero = ({ isLoading, versionsRef, contactRef, mainRef }: props) => {
-  const handleDownloadCall = () => {
-    if (!versionsRef.current || !mainRef.current) return;
-    mainRef.current.scrollTop = versionsRef.current.offsetTop;
+const frameSkips = 10;
+
+const Hero = ({ isLoading, mainRef, versionsRef, contactRef }: props) => {
+  const eleRef = useRef<HTMLDivElement>(null);
+
+  const prog = useScrollProgress(eleRef, mainRef);
+
+  const scrollVersions = () => {
+    if (!versionsRef.current) return;
+    versionsRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleContactCall = () => {
-    if (!contactRef.current || !mainRef.current) return;
-    mainRef.current.scrollTop = contactRef.current.offsetTop;
+  const scrollContacts = () => {
+    if (!contactRef.current) return;
+    contactRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <Wrapper>
+    <Wrapper ref={eleRef}>
+      <img
+        src="/images/hero_bg.png"
+        alt="hero img"
+        style={{ top: prog * frameSkips }}
+      />
       <Header
         variants={fadeInText}
         animate={isLoading ? "initial" : "eventual"}
         transition={{
           delay: 0.5,
+        }}
+        style={{
+          top: prog * frameSkips,
         }}
       >
         <h1>MYOUSIK</h1>
@@ -42,6 +55,9 @@ const Hero = ({ isLoading, versionsRef, contactRef, mainRef }: props) => {
           transition={{
             delay: 1,
           }}
+          style={{
+            top: prog * frameSkips,
+          }}
         >
           <motion.h2
             variants={fadeInText}
@@ -50,7 +66,7 @@ const Hero = ({ isLoading, versionsRef, contactRef, mainRef }: props) => {
               delay: 1.2,
             }}
           >
-            Easy, but advanced audio manager
+            Sound meets surrealism
           </motion.h2>
           <motion.p
             variants={fadeInText}
@@ -64,20 +80,27 @@ const Hero = ({ isLoading, versionsRef, contactRef, mainRef }: props) => {
             you've been waiting for - a sleek and user-friendly open-source
             audio player tailored specifically for Windows users.
           </motion.p>
-          <div style={{ display: "flex" }}>
-            <CustomButton title="Download" callback={handleDownloadCall} />
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+            }}
+          >
+            <CustomButton
+              image="/images/windows.png"
+              title="Download"
+              callback={scrollVersions}
+            />
             <CustomButton
               title="Contact"
               ghost={true}
-              callback={handleContactCall}
+              callback={scrollContacts}
             />
           </div>
         </InfoWrapper>
       </CentreWrapper>
       <ModelWrapper>
-        <Suspense>
-          <Spline scene={MOBILE_MODEL_LINK} />
-        </Suspense>
+        <img src="/images/model.png" alt="model" />
       </ModelWrapper>
     </Wrapper>
   );
@@ -87,11 +110,25 @@ export default Hero;
 
 const Wrapper = styled.div`
   position: relative;
-  height: 100vh;
+  height: 100%;
+  width: 100%;
   padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #151415;
+  transition: all 0.2s;
+
+  img {
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
 `;
 
 const Header = styled(motion.div)`
@@ -100,27 +137,34 @@ const Header = styled(motion.div)`
   color: var(--colors-accent-sec);
   margin-top: 3rem;
   font-size: 1.2rem;
-  z-index: 20;
+  z-index: 30;
+  transition: all 0.2s;
+
   @media (max-width: 1200px) {
     font-size: 1rem;
     margin-top: 1rem;
+    width: 100%;
   }
 `;
 
 const CentreWrapper = styled.div`
-  width: 85%;
-  max-width: 75rem;
+  width: 100%;
   margin-top: 1rem;
   flex: 1;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: start;
+  justify-content: end;
 `;
 
 const InfoWrapper = styled(motion.div)`
   position: relative;
-  max-width: 27rem;
+  max-width: 30rem;
   width: 100%;
-  z-index: 20;
+  z-index: 30;
+  padding-bottom: 5rem;
+  padding-left: 5rem;
+  transition: all 0.2s;
 
   h2 {
     color: var(--colors-font-pr);
@@ -135,57 +179,48 @@ const InfoWrapper = styled(motion.div)`
   }
 
   button {
-    margin-top: 2rem;
-    margin-right: 2rem;
+    @media (max-width: 400px) {
+      width: 50%;
+    }
+    margin-top: 1rem;
+    margin-right: 1rem;
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1000px) {
+    top: -10%;
+
     h2 {
-      font-size: 1.5rem;
+      font-size: 2rem;
     }
 
     p {
       font-size: 0.9rem;
     }
-
-    max-width: 20rem;
-    align-self: flex-end;
   }
 
-  @media (max-width: 1000px) {
-    h2 {
-      font-size: 1rem;
-      line-height: 1rem;
-    }
-
-    p {
-      font-size: 0.8rem;
-    }
-    margin-inline: auto;
-    max-width: 20rem;
-    align-self: flex-end;
+  @media (max-width: 550px) {
+    padding-left: 0rem;
   }
 `;
 
 const ModelWrapper = styled.div`
-  z-index: 10;
+  z-index: 20;
   position: absolute;
   align-self: flex-end;
   width: 100%;
   height: 100%;
   top: 0;
   right: -15vw;
+  pointer-events: none;
 
   @media (max-width: 1000px) {
-    right: 0;
-    height: 50%;
-    &::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      height: 200%;
-      background-color: rgb(0, 0, 0, 0.3);
-      pointer-events: none;
+    width: 100vw;
+    left: 0;
+    top: -20%;
+    img {
+      width: 100%;
+      object-fit: cover;
+      object-position: center;
     }
   }
 `;

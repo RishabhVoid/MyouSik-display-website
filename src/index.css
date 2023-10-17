@@ -11,16 +11,21 @@
   --font-family-sec: "Tektur", cursive;
   --colors-accent-pr: #f44336;
   --colors-accent-sec: #fff428;
+  --colors-accent-halo: #903c30;
   --colors-font-pr: #fff;
   --colors-font-sec: #c2c2c2;
-  --colors-bg-pr: #181818;
+  --colors-bg-pr: #1e1e1e;
   --colors-bg-sec: #282828;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   font-family: var(--font-family-pr);
   background-color: var(--colors-bg-pr);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 h1 {
