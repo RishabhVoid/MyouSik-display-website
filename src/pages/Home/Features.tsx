@@ -1,6 +1,6 @@
 import { css, styled } from "styled-components";
 import FeaturesData, { FeatureTypeDef } from "../../data/features";
-import { RefObject, useEffect, useRef } from "react";
+import { RefObject, useRef } from "react";
 import { useInView, motion } from "framer-motion";
 import fadeInText from "../../motions/fadeInText";
 import useScrollProgress from "../../hooks/useScrollProgress";
